@@ -1,2 +1,2 @@
 # COVID-data-portfolio-project
-![SQL Badge](https://img.shields.io/badge/SQL-T-SQL-blue)
+![T-SQL Badge](https://img.shields.io/badge/SQL-T--SQL-blue)
