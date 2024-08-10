@@ -1,3 +1,4 @@
+*.COVID_death_and_vaccinations_analysis.sql linguist-language=SQL
 SELECT *
 FROM 
 	PortfolioProject..CovidDeaths
