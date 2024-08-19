@@ -1,4 +1,3 @@
-*.COVID_death_and_vaccinations_analysis.sql linguist-language=SQL
 SELECT *
 FROM 
 	PortfolioProject..CovidDeaths
@@ -92,6 +91,8 @@ GROUP BY
 ORDER BY 
 	highest_deaths_count DESC
 
+--Order continents by the total deaths count but using the column location instead
+--of the continent(in the rows where continent is null, it is specified in location column)
 SELECT 
 	location, MAX(total_deaths) AS highest_deaths_count
 FROM 
@@ -104,7 +105,7 @@ ORDER BY
 	highest_deaths_count DESC
 
 
--- Global numbers
+-- Global worldwide numbers of death percentage changing in time 
 SELECT
 	date, 
 	SUM(new_cases) AS total_cases, 
@@ -122,10 +123,10 @@ GROUP BY
 HAVING
 	SUM(new_cases) != 0
 ORDER BY 
-	date, total_cases
+	date, total_cases;
 
 
--- Looking at Total Psopulation vs Vaccination
+-- Looking at Total Population vs Vaccination
 -- Use CTE
 WITH PopvsVac(continent, location, date, population, new_vaccinations, rolling_people_vaccinated)
 AS
@@ -149,7 +150,8 @@ FROM
 	PopvsVac
 
 
--- TEMP TABLE
+-- Looking at Total Population vs Vaccination
+-- use TEMP TABLE
 DROP TABLE IF EXISTS #Percent_population_vaccinated
 CREATE TABLE #Percent_population_vaccinated
 (
@@ -179,23 +181,4 @@ ORDER BY 2,3
 
 SELECT *, rolling_people_vaccinated/population*100 AS vaccinated_per_population
 FROM
-	#Percent_population_vaccinated
-
---Creating view for storing data for later visualizations
-CREATE VIEW Percent_population_vaccinated AS
-SELECT 
-	dea.continent, 
-	dea.location, 
-	dea.date, 
-	dea.population, 
-	vac.new_vaccinations,
-	SUM(CAST(vac.new_vaccinations AS BIGINT)) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) AS rolling_people_vaccinated
-FROM PortfolioProject..CovidDeaths dea
-JOIN PortfolioProject..CovidVaccinations vac
-	ON dea.location = vac.location 
-	AND dea.date = vac.date
-WHERE 
-	dea.continent is not null
-
-SELECT *
-FROM Percent_population_vaccinated
+	#Percent_population_vaccinated;
